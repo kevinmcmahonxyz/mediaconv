@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Manual test script for WebP to PNG conversion.
+Manual test script for image conversions.
 
 This is for quick testing during development.
 Run with: python test_manual.py
@@ -12,55 +12,75 @@ from pathlib import Path
 # Add src to path so we can import our module
 sys.path.insert(0, str(Path(__file__).parent / 'src'))
 
-from mediaconv.image_converter import convert_webp_to_png, get_image_info
+from mediaconv.image_converter import (
+    convert_webp_to_png,
+    convert_avif_to_png,
+    get_image_info
+)
 
 
-def test_conversion():
-    """Test the WebP to PNG conversion with a sample file."""
-    
-    # You'll need to provide a test WebP file
+def test_webp():
+    """Test WebP to PNG conversion."""
     input_file = 'test_image.webp'
-    output_file = 'test_output.png'
+    output_file = 'test_output_webp.png'
     
-    print(f"🔍 Testing WebP to PNG conversion")
-    print(f"   Input: {input_file}")
-    print(f"   Output: {output_file}")
-    print()
+    print("=" * 50)
+    print("🔍 Testing WebP to PNG conversion")
+    print("=" * 50)
     
-    # Check if input file exists
     if not Path(input_file).exists():
-        print(f"❌ Error: {input_file} not found!")
-        print(f"   Please place a WebP image in the current directory.")
+        print(f"⏭️  Skipping: {input_file} not found")
         return
     
     try:
-        # Get info about the input image
-        print("📊 Input image info:")
+        print(f"📊 Input: {input_file}")
         info = get_image_info(input_file)
-        for key, value in info.items():
-            print(f"   {key}: {value}")
-        print()
+        print(f"   Format: {info['format']}, Size: {info['size']}, Mode: {info['mode']}")
         
-        # Perform the conversion
-        print("🔄 Converting...")
         convert_webp_to_png(input_file, output_file)
         
-        # Get info about the output image
-        print("✅ Conversion successful!")
-        print("📊 Output image info:")
+        print(f"✅ Output: {output_file}")
         info = get_image_info(output_file)
-        for key, value in info.items():
-            print(f"   {key}: {value}")
+        print(f"   Format: {info['format']}, Size: {info['size']}, Mode: {info['mode']}")
         
-    except FileNotFoundError as e:
-        print(f"❌ File error: {e}")
-    except ValueError as e:
-        print(f"❌ Validation error: {e}")
-    except IOError as e:
-        print(f"❌ Conversion error: {e}")
     except Exception as e:
-        print(f"❌ Unexpected error: {e}")
+        print(f"❌ Error: {e}")
+    
+    print()
+
+
+def test_avif():
+    """Test AVIF to PNG conversion."""
+    input_file = 'test_image.avif'
+    output_file = 'test_output_avif.png'
+    
+    print("=" * 50)
+    print("🔍 Testing AVIF to PNG conversion")
+    print("=" * 50)
+    
+    if not Path(input_file).exists():
+        print(f"⏭️  Skipping: {input_file} not found")
+        print(f"   To test AVIF, create one with:")
+        print(f"   python -c \"from PIL import Image; import pillow_avif; Image.open('test_image.webp').save('test_image.avif', 'AVIF')\"")
+        return
+    
+    try:
+        print(f"📊 Input: {input_file}")
+        info = get_image_info(input_file)
+        print(f"   Format: {info['format']}, Size: {info['size']}, Mode: {info['mode']}")
+        
+        convert_avif_to_png(input_file, output_file)
+        
+        print(f"✅ Output: {output_file}")
+        info = get_image_info(output_file)
+        print(f"   Format: {info['format']}, Size: {info['size']}, Mode: {info['mode']}")
+        
+    except Exception as e:
+        print(f"❌ Error: {e}")
+    
+    print()
 
 
 if __name__ == '__main__':
-    test_conversion()
+    test_webp()
+    test_avif()

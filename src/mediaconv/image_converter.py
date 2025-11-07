@@ -6,6 +6,7 @@ Handles conversions from modern image formats (WebP, AVIF, SVG) to PNG.
 
 from pathlib import Path
 from PIL import Image
+import pillow_avif  # This import registers AVIF support with Pillow
 
 
 def convert_webp_to_png(input_path: str, output_path: str) -> None:
@@ -57,6 +58,53 @@ def convert_webp_to_png(input_path: str, output_path: str) -> None:
             
     except Exception as e:
         # Catch any PIL-specific errors and provide helpful context
+        raise IOError(f"Error converting {input_path} to PNG: {str(e)}") from e
+
+# At the top, add this import after the PIL import
+import pillow_avif  # This import registers AVIF support with Pillow
+
+
+# Add this new function after convert_webp_to_png
+def convert_avif_to_png(input_path: str, output_path: str) -> None:
+    """
+    Convert an AVIF image to PNG format.
+    
+    AVIF (AV1 Image File Format) is a modern image format with better
+    compression than WebP. It's becoming more common but not universally supported.
+    
+    Args:
+        input_path: Path to the input AVIF file
+        output_path: Path where the PNG file will be saved
+        
+    Raises:
+        FileNotFoundError: If the input file doesn't exist
+        ValueError: If the file is not a valid AVIF image
+        IOError: If there's an error reading or writing the file
+        
+    Example:
+        >>> convert_avif_to_png('photo.avif', 'photo.png')
+    """
+    input_file = Path(input_path)
+    output_file = Path(output_path)
+    
+    if not input_file.exists():
+        raise FileNotFoundError(f"Input file not found: {input_path}")
+    
+    if input_file.suffix.lower() != '.avif':
+        raise ValueError(f"Input file must be an AVIF image, got: {input_file.suffix}")
+    
+    try:
+        # The pillow_avif import above registered AVIF support
+        # Now Pillow knows how to open AVIF files automatically
+        with Image.open(input_file) as img:
+            
+            # AVIF can also be RGB or RGBA, same as WebP
+            if img.mode not in ('RGB', 'RGBA'):
+                img = img.convert('RGBA')
+            
+            img.save(output_file, 'PNG')
+            
+    except Exception as e:
         raise IOError(f"Error converting {input_path} to PNG: {str(e)}") from e
 
 
