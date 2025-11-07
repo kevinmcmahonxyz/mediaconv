@@ -18,6 +18,7 @@ from mediaconv.image_converter import (
     convert_svg_to_png,  # Add this
     get_image_info
 )
+from mediaconv.audio_converter import convert_mp3_to_wav
 
 
 def test_webp():
@@ -139,7 +140,38 @@ def test_svg():
     
     print()
 
+def test_mp3():
+    """Test MP3 to WAV conversion."""
+    input_file = 'test_audio.mp3'
+    output_file = 'test_output.wav'
+    
+    print("=" * 50)
+    print("🔍 Testing MP3 to WAV conversion")
+    print("=" * 50)
+    
+    if not Path(input_file).exists():
+        print(f"⏭️  Skipping: {input_file} not found")
+        print(f"   Place an MP3 file named 'test_audio.mp3' in the project directory")
+        return
+    
+    try:
+        print(f"📊 Input: {input_file}")
+        print(f"   Size: {Path(input_file).stat().st_size / 1024:.1f} KB")
+        
+        convert_mp3_to_wav(input_file, output_file)
+        
+        print(f"✅ Output: {output_file}")
+        print(f"   Size: {Path(output_file).stat().st_size / 1024:.1f} KB")
+        print(f"   Note: WAV files are much larger (uncompressed)")
+        
+    except Exception as e:
+        print(f"❌ Error: {e}")
+    
+    print()
+
+
 if __name__ == '__main__':
     test_webp()
     test_avif()
     test_svg()
+    test_mp3()
