@@ -7,7 +7,6 @@ setup(
     name="mediaconv",
     version="0.1.0",
     author="Kevin McMahon",
-    author_email="your.email@example.com",  # Update this
     description="Convert modern media formats to universal formats",
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -107,7 +107,7 @@ mediaconv logo.svg logo.png
 
 # Interactive mode
 mediaconv
-> Input file path: /mnt/c/Users/kpmcm/Downloads/photo.avif
+> Input file path: /mnt/c/Users/Your-User-Name/Downloads/photo.avif
 📝 Auto-generating output: photo.png
 🔄 Converting photo.avif → photo.png...
 ✅ Success! Saved to: photo.png
