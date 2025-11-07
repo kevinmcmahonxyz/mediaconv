@@ -18,8 +18,12 @@ from mediaconv.image_converter import (
     convert_svg_to_png,  # Add this
     get_image_info
 )
-from mediaconv.audio_converter import convert_mp3_to_wav
 
+from mediaconv.audio_converter import (
+    convert_mp3_to_wav,
+    convert_mp4_to_wav,  # Add this
+    convert_m4a_to_wav   # Add this
+)
 
 def test_webp():
     """Test WebP to PNG conversion."""
@@ -169,9 +173,67 @@ def test_mp3():
     
     print()
 
+def test_mp4():
+    """Test MP4 to WAV conversion (audio extraction)."""
+    input_file = 'test_video.mp4'
+    output_file = 'test_output_mp4.wav'
+    
+    print("=" * 50)
+    print("🔍 Testing MP4 to WAV conversion")
+    print("=" * 50)
+    
+    if not Path(input_file).exists():
+        print(f"⏭️  Skipping: {input_file} not found")
+        print(f"   Place an MP4 file named 'test_video.mp4' in the project directory")
+        return
+    
+    try:
+        print(f"📊 Input: {input_file}")
+        print(f"   Size: {Path(input_file).stat().st_size / 1024:.1f} KB")
+        
+        convert_mp4_to_wav(input_file, output_file)
+        
+        print(f"✅ Output: {output_file}")
+        print(f"   Size: {Path(output_file).stat().st_size / 1024:.1f} KB")
+        
+    except Exception as e:
+        print(f"❌ Error: {e}")
+    
+    print()
+
+
+def test_m4a():
+    """Test M4A to WAV conversion."""
+    input_file = 'test_audio.m4a'
+    output_file = 'test_output_m4a.wav'
+    
+    print("=" * 50)
+    print("🔍 Testing M4A to WAV conversion")
+    print("=" * 50)
+    
+    if not Path(input_file).exists():
+        print(f"⏭️  Skipping: {input_file} not found")
+        print(f"   Place an M4A file named 'test_audio.m4a' in the project directory")
+        return
+    
+    try:
+        print(f"📊 Input: {input_file}")
+        print(f"   Size: {Path(input_file).stat().st_size / 1024:.1f} KB")
+        
+        convert_m4a_to_wav(input_file, output_file)
+        
+        print(f"✅ Output: {output_file}")
+        print(f"   Size: {Path(output_file).stat().st_size / 1024:.1f} KB")
+        
+    except Exception as e:
+        print(f"❌ Error: {e}")
+    
+    print()
 
 if __name__ == '__main__':
     test_webp()
     test_avif()
     test_svg()
     test_mp3()
+    test_mp4()
+    test_m4a()
