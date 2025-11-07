@@ -7,7 +7,7 @@ Handles conversions from modern image formats (WebP, AVIF, SVG) to PNG.
 from pathlib import Path
 from PIL import Image
 import pillow_avif  # This import registers AVIF support with Pillow
-
+import cairosvg
 
 def convert_webp_to_png(input_path: str, output_path: str) -> None:
     """
@@ -107,6 +107,73 @@ def convert_avif_to_png(input_path: str, output_path: str) -> None:
     except Exception as e:
         raise IOError(f"Error converting {input_path} to PNG: {str(e)}") from e
 
+def convert_svg_to_png(
+    input_path: str,
+    output_path: str,
+    width: int = None,
+    height: int = None,
+    scale: float = 1.0
+) -> None:
+    """
+    Convert an SVG (vector) image to PNG (raster) format.
+    
+    SVG files don't have a fixed pixel size - they're mathematical descriptions
+    that can scale infinitely. You need to specify the output dimensions.
+    
+    Args:
+        input_path: Path to the input SVG file
+        output_path: Path where the PNG file will be saved
+        width: Output width in pixels (optional)
+        height: Output height in pixels (optional)
+        scale: Scale factor for default SVG size (default: 1.0)
+        
+    Note:
+        - If width and height are both None, uses SVG's default size * scale
+        - If only width is set, height scales proportionally
+        - If only height is set, width scales proportionally
+        - If both are set, uses those exact dimensions (may distort)
+        
+    Raises:
+        FileNotFoundError: If the input file doesn't exist
+        ValueError: If the file is not a valid SVG image
+        IOError: If there's an error reading or writing the file
+        
+    Examples:
+        >>> # Use SVG's default size
+        >>> convert_svg_to_png('logo.svg', 'logo.png')
+        
+        >>> # Specify exact dimensions
+        >>> convert_svg_to_png('logo.svg', 'logo.png', width=512, height=512)
+        
+        >>> # Scale up 2x from default size
+        >>> convert_svg_to_png('logo.svg', 'logo.png', scale=2.0)
+        
+        >>> # Width only (height scales proportionally)
+        >>> convert_svg_to_png('logo.svg', 'logo.png', width=1920)
+    """
+    input_file = Path(input_path)
+    output_file = Path(output_path)
+    
+    if not input_file.exists():
+        raise FileNotFoundError(f"Input file not found: {input_path}")
+    
+    if input_file.suffix.lower() not in ['.svg', '.svgz']:
+        raise ValueError(f"Input file must be an SVG image, got: {input_file.suffix}")
+    
+    try:
+        # cairosvg handles the conversion
+        # WHY use url= instead of file_obj: cairosvg needs the path for relative references
+        # (SVG files can reference other files, like embedded images or fonts)
+        cairosvg.svg2png(
+            url=str(input_file),
+            write_to=str(output_file),
+            output_width=width,
+            output_height=height,
+            scale=scale,
+        )
+        
+    except Exception as e:
+        raise IOError(f"Error converting {input_path} to PNG: {str(e)}") from e
 
 def get_image_info(image_path: str) -> dict:
     """

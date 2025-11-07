@@ -15,6 +15,7 @@ sys.path.insert(0, str(Path(__file__).parent / 'src'))
 from mediaconv.image_converter import (
     convert_webp_to_png,
     convert_avif_to_png,
+    convert_svg_to_png,  # Add this
     get_image_info
 )
 
@@ -80,7 +81,65 @@ def test_avif():
     
     print()
 
+def test_svg():
+    """Test SVG to PNG conversion."""
+    input_file = 'test_image.svg'
+    
+    print("=" * 50)
+    print("🔍 Testing SVG to PNG conversion")
+    print("=" * 50)
+    
+    if not Path(input_file).exists():
+        print(f"⏭️  Skipping: {input_file} not found")
+        print(f"   To test SVG, download one from:")
+        print(f"   curl -o test_image.svg https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/car.svg")
+        return
+    
+    try:
+        # Test 1: Default size
+        output1 = 'test_output_svg_default.png'
+        print(f"📊 Test 1: Default size")
+        convert_svg_to_png(input_file, output1)
+        info = get_image_info(output1)
+        print(f"   Output: {output1}")
+        print(f"   Size: {info['size']}, Mode: {info['mode']}")
+        print()
+        
+        # Test 2: Fixed width (height scales)
+        output2 = 'test_output_svg_512w.png'
+        print(f"📊 Test 2: Fixed width (512px)")
+        convert_svg_to_png(input_file, output2, width=512)
+        info = get_image_info(output2)
+        print(f"   Output: {output2}")
+        print(f"   Size: {info['size']}, Mode: {info['mode']}")
+        print()
+        
+        # Test 3: Scale factor
+        output3 = 'test_output_svg_2x.png'
+        print(f"📊 Test 3: 2x scale")
+        convert_svg_to_png(input_file, output3, scale=2.0)
+        info = get_image_info(output3)
+        print(f"   Output: {output3}")
+        print(f"   Size: {info['size']}, Mode: {info['mode']}")
+        print()
+        
+        # Test 4: Exact dimensions
+        output4 = 'test_output_svg_1920x1080.png'
+        print(f"📊 Test 4: Exact dimensions (1920x1080)")
+        convert_svg_to_png(input_file, output4, width=1920, height=1080)
+        info = get_image_info(output4)
+        print(f"   Output: {output4}")
+        print(f"   Size: {info['size']}, Mode: {info['mode']}")
+        
+        print()
+        print("✅ All SVG tests passed!")
+        
+    except Exception as e:
+        print(f"❌ Error: {e}")
+    
+    print()
 
 if __name__ == '__main__':
     test_webp()
     test_avif()
+    test_svg()
