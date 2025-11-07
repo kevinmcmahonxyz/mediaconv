@@ -1,0 +1,17 @@
+# Core dependencies
+click>=8.1.0          # CLI framework
+pillow>=10.0.0        # Image processing
+
+# Image format support
+pillow-avif-plugin>=1.4.0  # AVIF support
+cairosvg>=2.7.0            # SVG to PNG conversion
+
+# Audio processing
+pydub>=0.25.1              # FFmpeg wrapper for audio
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# Development
+black>=23.0.0              # Code formatter (optional)
